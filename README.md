@@ -1,6 +1,8 @@
 worldCupMascot
 ==============
 ##Informações
+O sistema foi testado em Linux e Windows.
+
 Foi utilizado o Java 7 e o banco MySQL no desenvolvimento do projeto.
 O script está no diretório do projeto num arquivo de nome mascote.sql.
 
