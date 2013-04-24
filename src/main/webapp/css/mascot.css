@@ -1,0 +1,77 @@
+@charset "UTF-8";
+/* CSS Document */
+label.voteInput {
+	font-size:large;
+	float: left;
+}
+
+label.resultDescription {
+	font-size:large;
+	float: left;
+	padding-bottom: 50px;
+	padding-top: 50px;
+}
+
+label.voteDesc {
+	font-size:small;
+	float: left;
+	color: gray;
+}
+
+label.resultPercentage {
+	font-size:x-large;
+	float: left;
+	color: gray;
+	padding-bottom: 50px;
+	padding-top: 50px;
+	padding-right: 25px;
+	padding-left: 25px;
+}
+
+div.conteudo {
+	width: 1000px;
+	margin: 0 auto;
+}
+
+input.radioBtn {
+	float: left;
+	text-align: left;
+}
+
+input#voteBtn {
+	font-style:oblique;
+	font-size:large;
+	background-color: moccasin;
+	width: 320px;
+}
+
+td.voteTd {
+	padding:5px;
+}
+
+fieldset {
+	margin: 15px auto 0;
+	border:1px solid #a29bc0;
+	padding: 20px;
+}
+
+.errorblock {
+	color: red;
+	background-color: #F3F2CF;
+	border: 1px solid red;
+	padding: 5px;
+	margin: 16px;
+	width: 350px;
+}
+
+.successblock {
+	color: blue;
+	background-color: #F3F2CF;
+	border: 1px solid blue;
+	padding: 5px;
+	margin: 16px;
+	width: 350px;
+}
+
+*{margin:0px; padding:0px; font-family:Arial, Helvetica, sans-serif;}
+

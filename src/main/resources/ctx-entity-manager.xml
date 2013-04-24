@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd"
+	default-autowire="byName">
+
+	<context:annotation-config />
+
+	<tx:annotation-driven transaction-manager="JtaTransactionManagerDefault" />
+	
+	<!-- data source -->
+    <bean id="springSecurityDatasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.user}" />
+		<property name="password" value="${db.passwd}" />
+    </bean>
+	
+	<!-- <bean id="defaultdatasource" class="com.atomikos.jdbc.nonxa.AtomikosNonXADataSourceBean">
+		<property name="user" value="root" />
+		<property name="password" value="senha123" />
+		<property name="url" value="jdbc:mysql://localhost/mascote" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="poolSize" value="10" />
+		<property name="connectionTimeout" value="60"/>
+	</bean> -->
+
+	<bean id="userTransactionServiceDefault" class="com.atomikos.icatch.config.UserTransactionServiceImp"
+		init-method="init" destroy-method="shutdownForce">
+	</bean>
+
+	<bean id="persistenceUnitManager"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager" />
+
+	<bean id="AtomikosTransactionManagerDefault" class="com.atomikos.icatch.jta.UserTransactionManager"
+		init-method="init" destroy-method="close" depends-on="userTransactionServiceDefault">
+		<property name="forceShutdown" value="false" />
+	</bean>
+
+	<bean id="AtomikosUserTransactionDefault" class="com.atomikos.icatch.jta.UserTransactionImp"
+		depends-on="userTransactionServiceDefault">
+		<property name="transactionTimeout" value="300" />
+	</bean>
+
+	<bean id="JtaTransactionManagerDefault"
+		class="org.springframework.transaction.jta.JtaTransactionManager"
+		depends-on="userTransactionServiceDefault">
+		<property name="transactionManager" ref="AtomikosTransactionManagerDefault" />
+		<property name="userTransaction" ref="AtomikosUserTransactionDefault" />
+	</bean>
+	
+	<bean id="entityManager" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
+		<property name="persistenceUnitManager" ref="persistenceUnitManager" />
+		<!-- <property name="dataSource" ref="localdatasource" /> -->
+		<property name="persistenceUnitName" value="mascotPU" />
+		<property name="jpaProperties">
+			<props>
+        		<prop key="hibernate.transaction.manager_lookup_class">com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.use_sql_comments">false</prop>
+                <prop key="hibernate.generate_statistics">false</prop>
+                <prop key="hibernate.connection.release_mode">after_statement</prop>
+			</props>
+		</property>
+		<property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="false" />
+            </bean>
+        </property>
+	</bean>
+
+</beans>
